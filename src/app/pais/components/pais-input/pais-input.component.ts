@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-pais-input',
@@ -6,17 +7,37 @@ import { Component, OnInit } from '@angular/core';
   styles: [
   ]
 })
+
 export class PaisInputComponent implements OnInit {
+
+  @Output() onEnter: EventEmitter<string> = new EventEmitter();
+  @Output() onDebounce: EventEmitter<string> = new EventEmitter();
+
+  debouncer: Subject<string> = new Subject();
 
   termino: string = ""; 
   
   constructor() { }
 
   ngOnInit(): void {
+    //este metodo se dispara 1 vez, cuando el componente es creado. 
+    this.debouncer.subscribe(valor => {
+      console.log("debouncer:", valor);
+    })
   }
 
-  buscar() {
+  buscar() {    
+    //la instruccion de arriba llama al padre 
     console.log("Hola, soy PaisInputComponent");
+    this.onEnter.emit(this.termino);
+  }
+
+  teclaPresionada(event: any) {
+    const valor = event.target.value;
+    console.log(valor);
+    
+    console.log(this.termino);
+
   }
 
 }
